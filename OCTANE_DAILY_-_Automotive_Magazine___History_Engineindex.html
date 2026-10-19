@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCTANE DAILY | Premium Automotive Journal & Historical Archive</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#D92323',
+              darkRed: '#991B1B',
+              dark: '#0B0F17',
+              surface: '#131924',
+              surfaceLight: '#1E2638',
+              warmGrey: '#F4F3F0',
+              warmGreyDark: '#E6E4DF',
+              border: '#2A3447'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0B0F17;
+      color: #E2E8F0;
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A3447;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3B4861;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0B0F17] text-slate-100 antialiased selection:bg-red-600 selection:text-white">
+
+  <!-- READING PROGRESS BAR -->
+  <div id="progressBar" class="fixed top-0 left-0 h-1 bg-brand-red z-50 transition-all duration-150 w-0"></div>
+
+  <header class="sticky top-0 z-40 bg-[#0B0F17]/95 backdrop-blur-md border-b border-slate-800 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo / Branding -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomepage()">
+          <div class="bg-brand-red text-white p-2.5 rounded-lg font-black tracking-tighter text-xl transform -skew-x-12 shadow-lg shadow-red-600/30">
+            OD
+          </div>
+          <div class="flex flex-col">
+            <span class="text-2xl font-black tracking-widest text-white uppercase italic">OCTANE<span class="text-brand-red">DAILY</span></span>
+            <span class="text-[10px] text-slate-400 tracking-widest uppercase font-semibold">Automotive Editorial & History</span>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <button onclick="filterCategory('All')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-white hover:text-brand-red transition hover:bg-slate-800/60">All Stories</button>
+          <button onclick="filterCategory('Supercars')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-brand-red transition hover:bg-slate-800/60">Supercars</button>
+          <button onclick="filterCategory('Motorsport')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-brand-red transition hover:bg-slate-800/60">Motorsport</button>
+          <button onclick="filterCategory('Tuning')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-brand-red transition hover:bg-slate-800/60">Tuning</button>
+          <button onclick="filterCategory('Classics')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-brand-red transition hover:bg-slate-800/60">Classics</button>
+          <button onclick="openArchiveView()" class="px-3.5 py-2 rounded-lg text-sm font-semibold text-red-400 hover:text-red-300 bg-red-950/30 hover:bg-red-950/60 border border-red-500/30 transition flex items-center space-x-1.5 ml-2">
+            <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+            <span>History Archive</span>
+          </button>
+        </nav>
+
+        <!-- Search & Bookmarks -->
+        <div class="flex items-center space-x-3">
+          <div class="relative hidden sm:block">
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search stories..." class="bg-slate-900 text-slate-200 text-sm rounded-full pl-9 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-brand-red w-40 focus:w-60 transition-all duration-300">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-sm"></i>
+          </div>
+
+          <button onclick="toggleBookmarksModal()" class="p-2.5 text-slate-300 hover:text-brand-red hover:bg-slate-800 rounded-full transition relative" title="Saved Articles">
+            <i class="fa-solid fa-bookmark text-lg"></i>
+            <span id="bookmarkBadge" class="hidden absolute top-1 right-1 bg-brand-red text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+          </button>
+
+          <!-- Mobile drawer toggle -->
+          <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Nav -->
+    <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-4 space-y-2">
+      <div class="pt-2 pb-3">
+        <input type="text" oninput="handleSearch(this.value)" placeholder="Search news, engineering, history..." class="w-full bg-slate-800 text-slate-200 text-sm rounded-lg px-4 py-2.5 border border-slate-700 focus:outline-none focus:border-brand-red mb-2">
+      </div>
+      <button onclick="filterCategory('All'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-slate-800">All Stories</button>
+      <button onclick="filterCategory('Supercars'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:bg-slate-800">Supercars</button>
+      <button onclick="filterCategory('Motorsport'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:bg-slate-800">Motorsport</button>
+      <button onclick="filterCategory('Tuning'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:bg-slate-800">Tuning</button>
+      <button onclick="filterCategory('Classics'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:bg-slate-800">Classics</button>
+      <button onclick="openArchiveView(); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-semibold text-red-400 bg-red-950/40 border border-red-900/50">
+        <i class="fa-solid fa-clock-rotate-left mr-2"></i> Automotive History Archive
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- HOMEPAGE VIEW -->
+    <div id="homepageView" class="space-y-12">
+
+      <section id="heroSection">
+        <div id="heroCard" class="relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 group shadow-2xl cursor-pointer" onclick="openArticle('hero-1')">
+          <div class="aspect-w-16 aspect-h-9 md:aspect-h-6 lg:h-[480px] w-full overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1600&q=80" alt="Porsche GT3 RS Aerodynamics" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700 opacity-80" onerror="this.src='https://placehold.co/1200x600/1e293b/ffffff?text=OCTANE+DAILY+FEATURED'">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0F17] via-[#0B0F17]/50 to-transparent"></div>
+          </div>
+
+          <div class="absolute bottom-0 inset-x-0 p-6 sm:p-8 md:p-10 flex flex-col justify-end">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Featured Story</span>
+              <span class="text-xs text-slate-300"><i class="fa-regular fa-clock mr-1"></i> 6 min read</span>
+              <span class="text-xs text-slate-300">• Oct 19, 2026</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight mb-3 group-hover:text-red-400 transition-colors">
+              The Aerodynamic Masterclass: Engineering the Ultimate Track-Focused Apex Predator
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base max-w-3xl line-clamp-2 sm:line-clamp-3 mb-4">
+              We go deep behind the scenes with Porsche Motorsport aerodynamics engineers to dissect how active DRS, extreme downforce, and high-rpm naturally aspirated power rewrite physics.
+            </p>
+            <div class="flex items-center space-x-4">
+              <button class="bg-brand-red hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center shadow-lg shadow-red-600/30">
+                Read Full Story <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="thisDayInHistorySection" class="relative my-10">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+          <div class="flex items-center space-x-3">
+            <div class="h-6 w-1.5 bg-brand-red rounded-full"></div>
+            <h2 class="text-lg sm:text-xl font-bold tracking-wider text-slate-100 uppercase flex items-center gap-2">
+              <span>This Day in Automotive History</span>
+            </h2>
+          </div>
+          <div id="historyDateBadge" class="self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-2">
+            <!-- Dynamic JS Date Status -->
+          </div>
+        </div>
+
+        <div class="bg-brand-warmGrey text-slate-900 rounded-2xl border border-slate-300 overflow-hidden shadow-2xl relative">
+          <div class="h-1.5 bg-brand-red"></div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12">
+            <!-- Image Column -->
+            <div class="lg:col-span-7 relative bg-slate-950 overflow-hidden min-h-[280px] sm:min-h-[360px] lg:min-h-[420px]">
+              <img id="historyCardImg" src="" alt="Historical Vehicle" class="w-full h-full object-cover object-center transform hover:scale-105 transition duration-700">
+              
+              <div class="absolute top-4 left-4 bg-slate-900/90 backdrop-blur-md border border-slate-700 text-white text-xs font-bold px-3 py-1.5 rounded-md shadow-lg flex items-center space-x-2">
+                <i class="fa-solid fa-trophy text-brand-red"></i>
+                <span id="historyEventTypeTag" class="uppercase tracking-wider">HISTORICAL MILESTONE</span>
+              </div>
+
+              <div class="absolute bottom-4 left-4 right-4 text-xs text-slate-200 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-lg border border-white/10 flex items-center justify-between">
+                <span class="truncate"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1.5"></i> <span id="historySourceTag">Verified Historical Record</span></span>
+                <span id="historyYearTag" class="font-mono font-bold text-red-400 ml-2">1958</span>
+              </div>
+            </div>
+
+            <!-- Text Content Column -->
+            <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between bg-brand-warmGrey">
+              <div>
+                <div class="flex items-center space-x-2 text-xs font-bold tracking-widest text-brand-red uppercase mb-2">
+                  <i class="fa-solid fa-calendar-day"></i>
+                  <span id="historyDateHeadline">OCTOBER 19</span>
+                  <span>•</span>
+                  <span id="historyHeadlineSub">HISTORICAL EVENT</span>
+                </div>
+
+                <h3 id="historyCarTitle" class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight mb-2 tracking-tight">
+                  Mike Hawthorn Wins F1 World Championship
+                </h3>
+
+                <div id="historyMakeModelDisplay" class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-4 bg-slate-200/80 inline-block px-2.5 py-1 rounded">
+                  Ferrari Dino 246 F1
+                </div>
+
+                <p id="historySummary" class="text-slate-700 text-sm sm:text-base leading-relaxed mb-6 font-normal">
+                  Mike Hawthorn finishes second at the Moroccan Grand Prix in Casablanca to become Britain's first Formula 1 World Drivers' Champion, driving the Ferrari Dino 246 F1.
+                </p>
+
+                <div id="historyMatchNotice" class="p-3 rounded-lg bg-amber-100/80 border border-amber-300 text-amber-900 text-xs mb-6 hidden">
+                  <i class="fa-solid fa-circle-info mr-1.5 text-amber-700"></i>
+                  <span>Showing a featured milestone from our verified history collection for today's system date.</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <button id="readHistoryBtn" onclick="openHistoryDetail()" class="flex-1 bg-slate-900 hover:bg-brand-red text-white font-bold px-5 py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center space-x-2 group">
+                  <span>READ THE STORY</span>
+                  <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <button onclick="openArchiveView()" class="px-4 py-3 bg-white hover:bg-slate-200 text-slate-800 font-semibold rounded-xl border border-slate-300 text-sm transition flex items-center justify-center space-x-2">
+                  <i class="fa-solid fa-list-ul text-slate-500"></i>
+                  <span>Archive</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <button onclick="openArchiveView()" class="text-xs font-bold text-slate-400 hover:text-brand-red transition tracking-wider uppercase inline-flex items-center space-x-1.5 py-1">
+            <span>VIEW AUTOMOTIVE HISTORY ARCHIVE</span>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="h-6 w-1.5 bg-brand-red rounded-full"></div>
+            <h2 id="gridTitle" class="text-xl sm:text-2xl font-bold tracking-tight text-white uppercase">
+              Latest Stories
+            </h2>
+          </div>
+          <div class="text-sm text-slate-400 font-medium">
+            <span id="articleCount">6</span> Stories
+          </div>
+        </div>
+
+        <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Articles dynamically generated via JS -->
+        </div>
+      </section>
+
+      <section class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 rounded-2xl p-8 sm:p-12 border border-slate-800 text-center relative overflow-hidden my-12">
+        <div class="max-w-2xl mx-auto relative z-10">
+          <span class="text-brand-red font-bold text-xs uppercase tracking-widest mb-2 block">Daily Automotive Intelligence</span>
+          <h3 class="text-2xl sm:text-3xl font-black text-white mb-3">The Morning Ignition Digest</h3>
+          <p class="text-slate-400 text-sm sm:text-base mb-6">
+            Curated motorsport engineering, classic vehicle milestones, and deep-dive supercar analysis delivered every morning.
+          </p>
+          <form onsubmit="handleNewsletter(event)" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input type="email" placeholder="Enter your email address..." required class="bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red flex-grow">
+            <button type="submit" class="bg-brand-red hover:bg-red-700 text-white font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-red-600/30 whitespace-nowrap">
+              Subscribe Free
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+
+    <div id="articleReaderView" class="hidden max-w-4xl mx-auto bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden p-6 sm:p-10 my-6 shadow-2xl">
+      <button onclick="showHomepage()" class="inline-flex items-center space-x-2 text-slate-400 hover:text-white mb-6 text-sm font-semibold transition">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Homepage</span>
+      </button>
+
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span id="readerCategory" class="bg-brand-red/20 text-red-400 border border-red-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase">Category</span>
+        <span id="readerDate" class="text-xs text-slate-400">Date</span>
+        <span id="readerReadTime" class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> 5 min read</span>
+      </div>
+
+      <h1 id="readerTitle" class="text-3xl sm:text-5xl font-black text-white leading-tight mb-6">Article Title</h1>
+
+      <div id="readerSourceBox" class="hidden bg-slate-800/90 border border-slate-700 rounded-xl p-4 mb-6 text-xs text-slate-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-shield-halved text-emerald-400 text-base"></i>
+          <div>
+            <strong class="text-white block">Verified Historical Milestone Record</strong>
+            <span class="text-slate-400">Cross-referenced with official archives & published motoring history.</span>
+          </div>
+        </div>
+        <a id="readerSourceLink" href="#" target="_blank" rel="noopener noreferrer" class="bg-slate-700 hover:bg-brand-red text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition inline-flex items-center space-x-1.5 shrink-0">
+          <span>Primary Source Citation</span>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
+
+      <div class="rounded-xl overflow-hidden mb-8 h-80 sm:h-[420px] relative bg-slate-950">
+        <img id="readerImage" src="" alt="Article hero image" class="w-full h-full object-cover">
+      </div>
+
+      <div id="readerBody" class="prose prose-invert max-w-none text-slate-300 text-base sm:text-lg leading-relaxed space-y-6 font-serif">
+        <!-- Text content dynamically injected -->
+      </div>
+
+      <div class="mt-12 pt-6 border-t border-slate-800 flex items-center justify-between">
+        <button id="bookmarkActionBtn" onclick="toggleCurrentBookmark()" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition">
+          <i class="fa-regular fa-bookmark" id="bookmarkIcon"></i>
+          <span id="bookmarkBtnText">Save Article</span>
+        </button>
+
+        <button onclick="shareArticle()" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition">
+          <i class="fa-solid fa-share-nodes"></i>
+          <span>Share Link</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="archiveView" class="hidden space-y-8 my-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-800">
+        <div>
+          <button onclick="showHomepage()" class="text-xs text-brand-red font-bold hover:underline mb-2 block uppercase tracking-wider">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Homepage
+          </button>
+          <h1 class="text-3xl font-black text-white tracking-tight">Automotive History Archive</h1>
+          <p class="text-slate-400 text-sm mt-1">Browse verified historical automotive events, launches, and racing victories by date.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <select id="archiveMonthFilter" onchange="filterArchive()" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-red">
+            <option value="ALL">All Months</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+
+          <select id="archiveTypeFilter" onchange="filterArchive()" class="bg-slate-800 border border-slate-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-red">
+            <option value="ALL">All Event Types</option>
+            <option value="Motorsport Victory">Motorsport Victories</option>
+            <option value="Public Launch">Public Launches / Unveilings</option>
+            <option value="Production Milestone">Production Milestones</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="archiveGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOOKMARKS MODAL -->
+  <div id="bookmarksModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-bookmark text-brand-red"></i>
+          <span>Saved Articles</span>
+        </h3>
+        <button onclick="toggleBookmarksModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div id="bookmarksList" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+        <!-- Dynamic list -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-800 text-white border border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 translate-y-20 opacity-0 transition-all duration-300">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg" class="text-sm font-medium">Notification</span>
+  </div>
+
+  <footer class="bg-slate-950 border-t border-slate-800 text-slate-400 py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-3">
+            <span class="bg-brand-red text-white font-black px-2 py-1 rounded text-sm">OD</span>
+            <span class="text-white font-bold text-lg tracking-wider">OCTANE DAILY</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Independent automotive journalism covering high-performance engineering, modern supercar testing, and verified automotive history milestones.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-white text-sm font-bold uppercase mb-3 tracking-wider">Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" onclick="filterCategory('Supercars'); return false;" class="hover:text-brand-red transition">Supercars & Hypercars</a></li>
+            <li><a href="#" onclick="filterCategory('Motorsport'); return false;" class="hover:text-brand-red transition">Motorsport & Formula 1</a></li>
+            <li><a href="#" onclick="filterCategory('Tuning'); return false;" class="hover:text-brand-red transition">Tuning & Engineering</a></li>
+            <li><a href="#" onclick="filterCategory('Classics'); return false;" class="hover:text-brand-red transition">Classics & Heritage</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white text-sm font-bold uppercase mb-3 tracking-wider">Historical Features</h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#" onclick="openArchiveView(); return false;" class="text-red-400 hover:text-red-300 transition font-semibold"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Automotive History Archive</a></li>
+            <li><a href="#" onclick="showHomepage(); return false;" class="hover:text-white transition">Featured Today Entry</a></li>
+            <li><a href="#" class="hover:text-white transition">Morning Ignition Newsletter</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-white text-sm font-bold uppercase mb-3 tracking-wider">Historical Veracity</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            All "This Day in Automotive History" entries undergo multi-point verification against official manufacturer archives, FIA timing logs, and reputable historical press registries.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-900 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+        <p>&copy; 2026 OCTANE DAILY Media Inc. Sample / Demo Content.</p>
+        <div class="flex space-x-4 mt-4 sm:mt-0">
+          <a href="#" class="hover:text-slate-400">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-400">Editorial Policy</a>
+          <a href="#" class="hover:text-slate-400">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 1. HISTORICAL DATABASE
+    const historyDatabase = [
+      {
+        id: 'hist-1',
+        month: 10,
+        day: 19,
+        year: 1958,
+        makeModel: 'Ferrari Dino 246 F1',
+        eventType: 'Motorsport Victory',
+        headline: "Mike Hawthorn Claims Britain's First Formula 1 World Championship",
+        summary: "Mike Hawthorn finished second at the 1958 Moroccan Grand Prix in Casablanca to become Britain's very first Formula 1 World Drivers' Champion, driving the front-engined Ferrari Dino 246 F1.",
+        fullStory: `
+          <p class="lead text-lg font-semibold text-slate-200">On October 19, 1958, at the Ain-Diab circuit in Casablanca, Morocco, Mike Hawthorn secured the 1958 Formula 1 World Drivers' Championship, etching his name into motorsport history as Britain's first World Champion.</p>
+          <p>Hawthorn, driving for Scuderia Ferrari in the front-engined Dino 246 F1, entered the final race of the season in an intense battle with Vanwall driver Stirling Moss. Although Moss dominated the race and took victory, Hawthorn's tactical second-place finish—coupled with his fastest lap point—gave him a one-point margin over Moss in the final standings.</p>
+          <p>The 1958 season was a pivotal turning point in F1 technical history, representing the absolute peak of front-engined Formula 1 design before the mid-engined revolution took over.</p>
+        `,
+        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1200&q=80',
+        sourceName: 'Formula 1 Official Heritage Archives',
+        sourceUrl: 'https://www.formula1.com/en/results/1958/races.html'
+      },
+      {
+        id: 'hist-2',
+        month: 10,
+        day: 17,
+        year: 1969,
+        makeModel: 'Plymouth Superbird',
+        eventType: 'Production Milestone',
+        headline: 'First Plymouth Superbird Homologation Special Completed',
+        summary: 'Chrysler engineers officially completed the final assembly of the first production Plymouth Superbird, featuring its iconic aerodynamic nose cone and towering rear wing designed for NASCAR domination.',
+        fullStory: `
+          <p>On October 17, 1969, Plymouth completed initial production sign-off on the Superbird, a highly modified, aerodynamic iteration of the Road Runner built specifically to lure Richard Petty back to Plymouth for the 1970 NASCAR season.</p>
+          <p>Using wind tunnel testing developed in Chrysler's missile division, the Superbird incorporated a long fiberglass nose cone and a 36-inch tall rear wing engineered to provide extreme downforce at speeds exceeding 200 mph on superspeedways like Daytona and Talladega.</p>
+        `,
+        image: 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=1200&q=80',
+        sourceName: 'Chrysler Historical Collection & Motor Trend Archives',
+        sourceUrl: 'https://www.motortrend.com/news/plymouth-superbird-history/'
+      },
+      {
+        id: 'hist-3',
+        month: 3,
+        day: 15,
+        year: 1961,
+        makeModel: 'Jaguar E-Type (XKE)',
+        eventType: 'Public Launch',
+        headline: 'Jaguar E-Type Stuns the World at Geneva Motor Show',
+        summary: 'Sir William Lyons unveiled the breathtaking Jaguar E-Type at the Parc des Expositions in Geneva. Its aerodynamic body and 150 mph top speed immediately established it as an automotive icon.',
+        fullStory: `
+          <p>On March 15, 1961, Jaguar unveiled the E-Type at the Geneva Motor Show to sensational international acclaim. Designed by aerodynamicist Malcolm Sayer, the car combined a monocoque passenger cell with a tubular front spaceframe housing a 3.8-liter straight-six engine producing 265 horsepower.</p>
+          <p>Enzo Ferrari famously declared the E-Type 'the most beautiful car ever made.' Demand was so intense that Jaguar executive Norman Dewis was ordered to drive a second press car overnight from Coventry to Geneva to accommodate media test drives.</p>
+        `,
+        image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+        sourceName: 'Jaguar Heritage Trust Archives',
+        sourceUrl: 'https://www.jaguarheritage.com/car/1961-jaguar-e-type-3-8-fixed-head-coupe/'
+      },
+      {
+        id: 'hist-4',
+        month: 4,
+        day: 17,
+        year: 1964,
+        makeModel: 'Ford Mustang',
+        eventType: 'Public Launch',
+        headline: 'Ford Mustang Unveiled at the New York World’s Fair',
+        summary: 'Lee Iacocca presented the original Ford Mustang at the World’s Fair in Flushing Meadows, NY, creating the pony car segment and generating 22,000 orders on its first day.',
+        fullStory: `
+          <p>On April 17, 1964, Ford Motor Company introduced the Mustang at the New York World’s Fair. Priced at a remarkably accessible $2,368, the Mustang featured a long hood, short deck design, and an extensive options list allowing buyers to order anything from an economical cruiser to a V8 sports car.</p>
+          <p>Ford anticipated 100,000 annual sales, but dealership demand resulted in over 400,000 units sold in its first year, making it one of the most successful vehicle launches in industrial history.</p>
+        `,
+        image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80',
+        sourceName: 'Ford Corporate History Archives',
+        sourceUrl: 'https://corporate.ford.com/articles/history/mustang.html'
+      },
+      {
+        id: 'hist-5',
+        month: 11,
+        day: 1,
+        year: 1962,
+        makeModel: 'Ferrari 250 GTO',
+        eventType: 'Production Milestone',
+        headline: 'Ferrari 250 GTO Achieves Homologation Distinction',
+        summary: 'Scuderia Ferrari finalized early production runs for the 250 GTO, powered by Gioachino Colombo’s 3.0L V12, securing FIA Group 3 GT racing eligibility.',
+        fullStory: `
+          <p>Developed by Giotto Bizzarrini and Mauro Forghieri, the 250 GTO represents the pinnacle of front-engined GT racing cars. With all 36 chassis hand-crafted in aluminum, the 250 GTO won the International Championship for GT Manufacturers three years in a row (1962-1964).</p>
+        `,
+        image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1200&q=80',
+        sourceName: 'Ferrari Classiche & FIA Historic Archives',
+        sourceUrl: 'https://www.ferrari.com/en-EN/auto/250-gto'
+      }
+    ];
+
+    const fallbackHistoryEntry = {
+      id: 'hist-fallback',
+      month: 0,
+      day: 0,
+      year: 1995,
+      makeModel: 'McLaren F1 GTR',
+      eventType: 'Motorsport Victory',
+      headline: 'McLaren F1 GTR Triumphs at 24 Hours of Le Mans',
+      summary: 'The McLaren F1 GTR achieved legendary status by claiming overall victory on its first attempt at Le Mans, demonstrating the supremacy of Gordon Murray’s carbon-monocoque design.',
+      fullStory: `
+        <p class="lead font-semibold text-slate-200">The McLaren F1 GTR's victory at the 1995 24 Hours of Le Mans remains one of the most iconic achievements in modern endurance racing.</p>
+        <p>Originally designed strictly as the ultimate road-going supercar without racing intentions, customer demand led McLaren to construct GT racing variants. In difficult, rain-soaked conditions at the Circuit de la Sarthe, the BMW V12-powered #59 Kokusai Kaihatsu Racing entry defeated purpose-built prototypes to take overall victory.</p>
+      `,
+      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80',
+      sourceName: 'McLaren Heritage Archives',
+      sourceUrl: 'https://www.mclaren.com/racing/heritage/'
+    };
+
+    // 2. ARTICLES DATABASE
+    const articlesDatabase = [
+      {
+        id: 'hero-1',
+        title: 'The Aerodynamic Masterclass: Engineering the Ultimate Track-Focused Apex Predator',
+        category: 'Supercars',
+        date: 'Oct 19, 2026',
+        readTime: '6 min read',
+        image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80',
+        summary: 'We go deep behind the scenes with Porsche Motorsport aerodynamics engineers to dissect how active DRS, extreme downforce, and high-rpm naturally aspirated power rewrite physics.',
+        body: `
+          <p>Downforce is no longer just a passive aerodynamic tool—it has become an active, real-time chassis stabilizer. In modern track engineering, balancing high-speed stability against drag reduction determines lap times down to hundredths of a second.</p>
+          <p>In our comprehensive track evaluation at Spa-Francorchamps, we analyze how hydraulic wing actuators, active front diffusers, and carbon-ceramic brake ventilation work in unison under heavy cornering loads.</p>
+          <p>The result is a driving experience that bridges the gap between road-legal registration and GT3-spec endurance race cars.</p>
+        `
+      },
+      {
+        id: 'art-1',
+        title: 'Revitalizing Legacy: The Art of Restomodding Air-Cooled Legends',
+        category: 'Classics',
+        date: 'Oct 18, 2026',
+        readTime: '5 min read',
+        image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80',
+        summary: 'How modern carbon fiber, modern suspension geometry, and custom engine builds breathe high-revving new life into iconic classic silhouettes.',
+        body: `<p>Combining nostalgic classic design with modern CNC engineering creates the ultimate driving visceral feel. We visit premier restoration craftsmen to inspect their chassis seam welding and custom intake manifolds.</p>`
+      },
+      {
+        id: 'art-2',
+        title: 'Night Battles at Nürburgring Nordschleife: Endurance Racing Secrets',
+        category: 'Motorsport',
+        date: 'Oct 17, 2026',
+        readTime: '7 min read',
+        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80',
+        summary: 'Tire compound management, driver fatigue, and dense fog: navigating 25 kilometers of asphalt during 24-hour endurance battles.',
+        body: `<p>Racing through the Green Hell in pitch darkness tests even seasoned factory drivers. We examine telemetry logs and pit strategy calls during crucial midnight stint changes.</p>`
+      },
+      {
+        id: 'art-3',
+        title: 'Twin-Turbo V8 vs. Naturally Aspirated V12: The Soundtrack Epoch',
+        category: 'Tuning',
+        date: 'Oct 15, 2026',
+        readTime: '4 min read',
+        image: 'https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=800&q=80',
+        summary: 'Exhaust header tuning, equal-length runners, and acoustic engineering: why engine note remains the soul of driving emotion.',
+        body: `<p>Acoustic resonance in high-performance exhaust systems requires acoustic simulations similar to concert halls. Here is how engineers tune exhaust pitch without restricting exhaust gas flow velocity.</p>`
+      },
+      {
+        id: 'art-4',
+        title: 'Lightweight Alloys & Forged Composites: Unsprung Weight Explained',
+        category: 'Tuning',
+        date: 'Oct 12, 2026',
+        readTime: '5 min read',
+        image: 'https://images.unsplash.com/photo-1541348263662-e082662d82da?auto=format&fit=crop&w=800&q=80',
+        summary: 'Reducing rotational inertia at the wheels yields exponentially better turn-in response and damper performance. Here is the math.',
+        body: `<p>Every kilogram saved in unsprung mass equals four kilograms saved on the vehicle body in terms of suspension damping dynamics and road contact force retention.</p>`
+      },
+      {
+        id: 'art-5',
+        title: 'The Golden Era of Rally Homologation Special Road Cars',
+        category: 'Classics',
+        date: 'Oct 10, 2026',
+        readTime: '6 min read',
+        image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80',
+        summary: 'From Group B monsters to Group A all-wheel-drive legends, we explore how motorsport rulebooks gave birth to legendary road vehicles.',
+        body: `<p>Homologation rules forced manufacturers to sell hundreds of street-legal versions of extreme rally cars, leading to widebody arches and turbocharged powerplants on suburban roads.</p>`
+      }
+    ];
+
+    let currentArticleId = null;
+    let activeTodayEntry = null;
+    let savedBookmarks = JSON.parse(localStorage.getItem('octane_bookmarks') || '[]');
+
+    window.onload = function() {
+      initThisDayInHistory();
+      renderArticlesGrid(articlesDatabase);
+      updateBookmarkBadge();
+      window.addEventListener('scroll', updateProgressBar);
+    };
+
+    function initThisDayInHistory() {
+      const today = new Date();
+      const currentMonth = today.getMonth() + 1;
+      const currentDay = today.getDate();
+
+      const match = historyDatabase.find(e => e.month === currentMonth && e.day === currentDay);
+      const dateBadge = document.getElementById('historyDateBadge');
+      const noticeBox = document.getElementById('historyMatchNotice');
+
+      if (match) {
+        activeTodayEntry = match;
+        dateBadge.className = "self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-2";
+        dateBadge.innerHTML = `<i class="fa-solid fa-circle text-[8px] animate-pulse"></i> MATCHED TODAY'S DATE (${getMonthName(currentMonth).toUpperCase()} ${currentDay})`;
+        noticeBox.classList.add('hidden');
+      } else {
+        activeTodayEntry = fallbackHistoryEntry;
+        dateBadge.className = "self-start sm:self-auto text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-2";
+        dateBadge.innerHTML = `<i class="fa-solid fa-clock-rotate-left text-brand-red"></i> TODAY IS ${getMonthName(currentMonth).toUpperCase()} ${currentDay} • FEATURED MILESTONE`;
+        noticeBox.classList.remove('hidden');
+      }
+
+      const entry = activeTodayEntry;
+      document.getElementById('historyCardImg').src = entry.image;
+      document.getElementById('historyEventTypeTag').innerText = entry.eventType;
+      document.getElementById('historyDateHeadline').innerText = entry.month > 0 ? `${getMonthName(entry.month).toUpperCase()} ${entry.day}` : `HISTORICAL MILESTONE`;
+      document.getElementById('historyHeadlineSub').innerText = `${entry.year} • ${entry.eventType.toUpperCase()}`;
+      document.getElementById('historyCarTitle').innerText = entry.headline;
+      document.getElementById('historyMakeModelDisplay').innerText = `${entry.makeModel} (${entry.year})`;
+      document.getElementById('historySummary').innerText = entry.summary;
+      document.getElementById('historySourceTag').innerText = entry.sourceName;
+      document.getElementById('historyYearTag').innerText = entry.year;
+    }
+
+    function getMonthName(m) {
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      return months[m - 1] || 'October';
+    }
+
+    function openHistoryDetail(histId = null) {
+      const entry = histId 
+        ? historyDatabase.find(h => h.id === histId) 
+        : activeTodayEntry;
+
+      if (!entry) return;
+
+      currentArticleId = entry.id;
+
+      document.getElementById('homepageView').classList.add('hidden');
+      document.getElementById('archiveView').classList.add('hidden');
+      document.getElementById('articleReaderView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      document.getElementById('readerCategory').innerText = `AUTOMOTIVE HISTORY: ${entry.eventType}`;
+      document.getElementById('readerDate').innerText = entry.month > 0 ? `${getMonthName(entry.month)} ${entry.day}, ${entry.year}` : `Featured Historic Milestone (${entry.year})`;
+      document.getElementById('readerReadTime').innerText = `Verified Record`;
+      document.getElementById('readerTitle').innerText = entry.headline;
+      document.getElementById('readerImage').src = entry.image;
+
+      const sourceBox = document.getElementById('readerSourceBox');
+      const sourceLink = document.getElementById('readerSourceLink');
+      sourceBox.classList.remove('hidden');
+      sourceLink.href = entry.sourceUrl;
+      sourceLink.querySelector('span').innerText = entry.sourceName;
+
+      document.getElementById('readerBody').innerHTML = `
+        <div class="bg-slate-800/60 p-5 rounded-2xl border-l-4 border-brand-red mb-6 text-slate-200 italic font-sans text-base">
+          "${entry.summary}"
+        </div>
+        ${entry.fullStory}
+      `;
+
+      updateBookmarkButtonUI();
+    }
+
+    function openArchiveView() {
+      document.getElementById('homepageView').classList.add('hidden');
+      document.getElementById('articleReaderView').classList.add('hidden');
+      document.getElementById('archiveView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      renderArchiveGrid(historyDatabase);
+    }
+
+    function renderArchiveGrid(items) {
+      const grid = document.getElementById('archiveGrid');
+      grid.innerHTML = '';
+
+      const validItems = items.filter(i => i.id !== 'hist-fallback');
+
+      if (validItems.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-medium">No historical records match your selected month/filter.</div>`;
+        return;
+      }
+
+      validItems.forEach(entry => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between hover:border-slate-700 transition group";
+        card.innerHTML = `
+          <div>
+            <div class="relative h-48 overflow-hidden bg-slate-950">
+              <img src="${entry.image}" alt="${entry.makeModel}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3 bg-brand-red text-white text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+                ${entry.eventType}
+              </div>
+              <div class="absolute bottom-2 right-3 font-mono font-bold text-xs text-slate-300 bg-black/70 px-2 py-0.5 rounded">
+                ${entry.year}
+              </div>
+            </div>
+            <div class="p-5">
+              <div class="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">
+                ${getMonthName(entry.month)} ${entry.day}
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2 leading-snug group-hover:text-red-400 transition-colors line-clamp-2">
+                ${entry.headline}
+              </h3>
+              <p class="text-slate-400 text-xs line-clamp-3 leading-relaxed mb-4">
+                ${entry.summary}
+              </p>
+            </div>
+          </div>
+          <div class="px-5 pb-5 pt-0">
+            <button onclick="openHistoryDetail('${entry.id}')" class="w-full bg-slate-800 hover:bg-brand-red text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center space-x-1.5">
+              <span>READ HISTORICAL STORY</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterArchive() {
+      const selectedMonth = document.getElementById('archiveMonthFilter').value;
+      const selectedType = document.getElementById('archiveTypeFilter').value;
+
+      const filtered = historyDatabase.filter(item => {
+        const matchesMonth = selectedMonth === 'ALL' || item.month.toString() === selectedMonth;
+        const matchesType = selectedType === 'ALL' || item.eventType === selectedType;
+        return matchesMonth && matchesType;
+      });
+
+      renderArchiveGrid(filtered);
+    }
+
+    function renderArticlesGrid(articles) {
+      const grid = document.getElementById('articlesGrid');
+      grid.innerHTML = '';
+
+      document.getElementById('articleCount').innerText = articles.length;
+
+      if (articles.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-medium">No stories found matching your query.</div>`;
+        return;
+      }
+
+      articles.forEach(art => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg hover:border-slate-700 transition flex flex-col justify-between group cursor-pointer";
+        card.onclick = () => openArticle(art.id);
+        
+        card.innerHTML = `
+          <div>
+            <div class="relative h-48 sm:h-52 overflow-hidden bg-slate-950">
+              <img src="${art.image}" alt="${art.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=OCTANE+DAILY'">
+              <div class="absolute top-3 left-3 bg-slate-900/90 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase border border-slate-700">
+                ${art.category}
+              </div>
+            </div>
+            <div class="p-5">
+              <div class="flex items-center space-x-2 text-xs text-slate-400 mb-2">
+                <span>${art.date}</span>
+                <span>•</span>
+                <span>${art.readTime}</span>
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2 leading-snug group-hover:text-red-400 transition-colors line-clamp-2">
+                ${art.title}
+              </h3>
+              <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed">
+                ${art.summary}
+              </p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 text-xs font-bold text-brand-red flex items-center space-x-1 group-hover:translate-x-1 transition-transform">
+            <span>Read Story</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function showHomepage() {
+      document.getElementById('articleReaderView').classList.add('hidden');
+      document.getElementById('archiveView').classList.add('hidden');
+      document.getElementById('homepageView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openArticle(id) {
+      const art = articlesDatabase.find(a => a.id === id);
+      if (!art) return;
+
+      currentArticleId = id;
+
+      document.getElementById('homepageView').classList.add('hidden');
+      document.getElementById('archiveView').classList.add('hidden');
+      document.getElementById('articleReaderView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      document.getElementById('readerCategory').innerText = art.category;
+      document.getElementById('readerDate').innerText = art.date;
+      document.getElementById('readerReadTime').innerText = art.readTime;
+      document.getElementById('readerTitle').innerText = art.title;
+      document.getElementById('readerImage').src = art.image;
+
+      document.getElementById('readerSourceBox').classList.add('hidden');
+
+      document.getElementById('readerBody').innerHTML = `
+        <p class="lead text-lg font-semibold text-slate-200 mb-4">${art.summary}</p>
+        ${art.body}
+      `;
+
+      updateBookmarkButtonUI();
+    }
+
+    function filterCategory(cat) {
+      showHomepage();
+      const titleElem = document.getElementById('gridTitle');
+      
+      if (cat === 'All') {
+        titleElem.innerText = 'Latest Stories';
+        renderArticlesGrid(articlesDatabase);
+      } else {
+        titleElem.innerText = `${cat} Stories`;
+        const filtered = articlesDatabase.filter(a => a.category.toLowerCase() === cat.toLowerCase());
+        renderArticlesGrid(filtered);
+      }
+    }
+
+    function handleSearch(query) {
+      if (!query.trim()) {
+        renderArticlesGrid(articlesDatabase);
+        return;
+      }
+      showHomepage();
+      const q = query.toLowerCase();
+      const filtered = articlesDatabase.filter(a => 
+        a.title.toLowerCase().includes(q) || 
+        a.summary.toLowerCase().includes(q) ||
+        a.category.toLowerCase().includes(q)
+      );
+      document.getElementById('gridTitle').innerText = `Search Results: "${query}"`;
+      renderArticlesGrid(filtered);
+    }
+
+    function toggleCurrentBookmark() {
+      if (!currentArticleId) return;
+
+      const index = savedBookmarks.indexOf(currentArticleId);
+      if (index > -1) {
+        savedBookmarks.splice(index, 1);
+        showToast('Story removed from saved bookmarks', 'info');
+      } else {
+        savedBookmarks.push(currentArticleId);
+        showToast('Story saved to bookmarks', 'success');
+      }
+
+      localStorage.setItem('octane_bookmarks', JSON.stringify(savedBookmarks));
+      updateBookmarkButtonUI();
+      updateBookmarkBadge();
+    }
+
+    function updateBookmarkButtonUI() {
+      const isSaved = savedBookmarks.includes(currentArticleId);
+      const icon = document.getElementById('bookmarkIcon');
+      const text = document.getElementById('bookmarkBtnText');
+
+      if (isSaved) {
+        icon.className = 'fa-solid fa-bookmark text-brand-red';
+        text.innerText = 'Saved in Bookmarks';
+      } else {
+        icon.className = 'fa-regular fa-bookmark';
+        text.innerText = 'Save Article';
+      }
+    }
+
+    function updateBookmarkBadge() {
+      const badge = document.getElementById('bookmarkBadge');
+      if (savedBookmarks.length > 0) {
+        badge.innerText = savedBookmarks.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function toggleBookmarksModal() {
+      const modal = document.getElementById('bookmarksModal');
+      const list = document.getElementById('bookmarksList');
+
+      if (modal.classList.contains('hidden')) {
+        list.innerHTML = '';
+
+        if (savedBookmarks.length === 0) {
+          list.innerHTML = `<div class="text-center py-6 text-slate-500 text-sm font-medium">No saved articles yet.</div>`;
+        } else {
+          savedBookmarks.forEach(id => {
+            let item = articlesDatabase.find(a => a.id === id) || historyDatabase.find(h => h.id === id);
+            if (!item) return;
+
+            const isHistory = !!item.makeModel;
+            const title = isHistory ? item.headline : item.title;
+
+            const div = document.createElement('div');
+            div.className = "flex items-center justify-between p-3 bg-slate-800 rounded-xl hover:bg-slate-700/80 transition cursor-pointer";
+            div.onclick = () => {
+              toggleBookmarksModal();
+              if (isHistory) openHistoryDetail(item.id);
+              else openArticle(item.id);
+            };
+
+            div.innerHTML = `
+              <div class="pr-2">
+                <span class="text-[10px] text-red-400 font-bold uppercase block">${isHistory ? 'History' : item.category}</span>
+                <span class="text-xs font-bold text-white line-clamp-1">${title}</span>
+              </div>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+            `;
+            list.appendChild(div);
+          });
+        }
+
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+
+    function handleNewsletter(e) {
+      e.preventDefault();
+      showToast('Thank you for subscribing to Morning Ignition!', 'success');
+      e.target.reset();
+    }
+
+    function shareArticle() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.href);
+      }
+      showToast('Article link copied to clipboard!', 'success');
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.innerText = msg;
+      if (type === 'success') {
+        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400';
+      } else {
+        toastIcon.className = 'fa-solid fa-circle-info text-amber-400';
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    function updateProgressBar() {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+    }
+  </script>
+</body>
+</html>
